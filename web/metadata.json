@@ -1,0 +1,7 @@
+{
+  "name": "IDRD - Intelligent Dynamic Routing Dispatcher",
+  "description": "Next-generation dashboard for managing dynamic IP routing and DNS dispatching.",
+  "requestFramePermissions": [
+    "fullscreen"
+  ]
+}

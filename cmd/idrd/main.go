@@ -198,7 +198,7 @@ services:
     
     # 健康检查
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:%d/health"]
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://localhost:%d/health"]
       interval: 30s
       timeout: 10s
       retries: 3

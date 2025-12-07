@@ -271,9 +271,57 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 2000); // 2秒轮询，更快响应 IP 变化
+    const interval = setInterval(fetchData, 5000); // 轮询作为降级方案
     const clock = setInterval(() => setNow(new Date()), 1000);
-    return () => { clearInterval(interval); clearInterval(clock); };
+
+    // WebSocket 实时推送
+    let ws: WebSocket | null = null;
+    let reconnectTimer: NodeJS.Timeout | null = null;
+
+    const connectWebSocket = () => {
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${protocol}//${window.location.host}/ws`;
+
+      try {
+        ws = new WebSocket(wsUrl);
+
+        ws.onopen = () => {
+          console.log('📡 WebSocket 已连接');
+        };
+
+        ws.onmessage = (event) => {
+          try {
+            const msg = JSON.parse(event.data);
+            if (msg.type === 'ip_change') {
+              console.log('🔄 收到 IP 变化推送:', msg.data);
+              fetchData(); // 立即刷新数据
+            }
+          } catch (e) {
+            console.warn('WebSocket 消息解析失败', e);
+          }
+        };
+
+        ws.onclose = () => {
+          console.log('📡 WebSocket 已断开，5 秒后重连...');
+          reconnectTimer = setTimeout(connectWebSocket, 5000);
+        };
+
+        ws.onerror = (error) => {
+          console.warn('📡 WebSocket 错误', error);
+        };
+      } catch (e) {
+        console.warn('WebSocket 连接失败，使用轮询模式', e);
+      }
+    };
+
+    connectWebSocket();
+
+    return () => {
+      clearInterval(interval);
+      clearInterval(clock);
+      if (reconnectTimer) clearTimeout(reconnectTimer);
+      if (ws) ws.close();
+    };
   }, [timeRange]);
 
   // --- Helpers ---
@@ -296,7 +344,7 @@ const Dashboard = () => {
 
   const timeAgo = (dateStr: string) => {
     if (!dateStr) return '--';
-    const diff = Math.floor((now.getTime() - new Date(dateStr).getTime()) / 1000);
+    const diff = Math.max(0, Math.floor((now.getTime() - new Date(dateStr).getTime()) / 1000));
     if (diff < 60) return `${diff}s`;
     if (diff < 3600) return `${Math.floor(diff / 60)}m`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}h`;

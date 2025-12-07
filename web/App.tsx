@@ -1,6 +1,6 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
 import { HashRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
-import { LayoutDashboard, Settings, Lock, Languages, LogOut, Sun, Moon, Monitor, Maximize2, Minimize2, X } from 'lucide-react';
+import { LayoutDashboard, Settings, Lock, Languages, LogOut, Sun, Moon, Monitor, Maximize2, Minimize2, X, Globe } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Dashboard from './pages/Dashboard';
 import ConfigPage from './pages/ConfigPage';
@@ -162,7 +162,7 @@ const Layout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
           >
             <div className="p-6">
               <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-500 tracking-tight flex items-center gap-2">
-                <span>🌐</span> IDRD
+                <Globe size={24} className="text-primary" /> IDRD
               </h1>
               <p className="text-xs text-muted mt-1 font-mono tracking-wide">IP & DNS Records Dashboard</p>
             </div>
@@ -190,7 +190,7 @@ const Layout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
       {/* Mobile Header */}
       {!isFullscreenMode && (
         <div className="md:hidden fixed top-0 w-full z-20 bg-surface/80 backdrop-blur-lg px-6 py-4 flex justify-between items-center shadow-sm">
-          <span className="font-bold text-xl text-primary">🌐 IDRD</span>
+          <span className="font-bold text-xl text-primary flex items-center gap-1.5"><Globe size={20} /> IDRD</span>
           <div className="flex gap-4">
             <a href="#/" className={location.pathname === '/' ? 'text-primary' : 'text-muted'}><LayoutDashboard size={24} /></a>
             <a href="#/config" className={location.pathname === '/config' ? 'text-primary' : 'text-muted'}><Settings size={24} /></a>

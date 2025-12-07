@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- 主渐变 -->
+    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#06b6d4"/>
+      <stop offset="100%" style="stop-color:#0f172a"/>
+    </linearGradient>
+    <!-- 高亮渐变 -->
+    <linearGradient id="highlightGradient" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#14b8a6"/>
+      <stop offset="100%" style="stop-color:#22d3ee"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- 背景圆形 -->
+  <circle cx="32" cy="32" r="30" fill="url(#mainGradient)"/>
+  
+  <!-- 网络节点 - 中心圆 -->
+  <circle cx="32" cy="32" r="8" fill="url(#highlightGradient)"/>
+  
+  <!-- 连接线条 -->
+  <path d="M32 24 L32 12" stroke="#22d3ee" stroke-width="3" stroke-linecap="round"/>
+  <path d="M32 40 L32 52" stroke="#22d3ee" stroke-width="3" stroke-linecap="round"/>
+  <path d="M24 32 L12 32" stroke="#22d3ee" stroke-width="3" stroke-linecap="round"/>
+  <path d="M40 32 L52 32" stroke="#22d3ee" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- 外部节点 -->
+  <circle cx="32" cy="10" r="4" fill="#22d3ee"/>
+  <circle cx="32" cy="54" r="4" fill="#14b8a6"/>
+  <circle cx="10" cy="32" r="4" fill="#14b8a6"/>
+  <circle cx="54" cy="32" r="4" fill="#22d3ee"/>
+  
+  <!-- 动态箭头 - 表示 IP 更新 -->
+  <path d="M44 20 L48 16 L52 20" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M48 16 L48 26" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

@@ -3,6 +3,7 @@ package server
 import (
 	"log"
 	"net/http"
+	"strings"
 	"sync"
 
 	"github.com/gorilla/websocket"
@@ -36,7 +37,36 @@ var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
 	CheckOrigin: func(r *http.Request) bool {
-		return true // 允许所有来源（生产环境应限制）
+		origin := r.Header.Get("Origin")
+		
+		// 如果没有 Origin 头（如命令行工具），允许
+		if origin == "" {
+			return true
+		}
+		
+		// 获取请求的 Host
+		host := r.Host
+		
+		// 验证 Origin 是否匹配当前 Host
+		// 支持 http://host 或 https://host 格式
+		allowedOrigins := []string{
+			"http://" + host,
+			"https://" + host,
+			"http://localhost",
+			"http://127.0.0.1",
+			"https://localhost",
+			"https://127.0.0.1",
+		}
+		
+		for _, allowed := range allowedOrigins {
+			// 精确匹配或带端口匹配
+			if origin == allowed || strings.HasPrefix(origin, allowed+":") {
+				return true
+			}
+		}
+		
+		log.Printf("⚠️  WebSocket Origin 验证失败: Origin=%s, Host=%s", origin, host)
+		return false
 	},
 }
 
@@ -104,6 +134,22 @@ func (h *Hub) ClientCount() int {
 
 // handleWebSocket 处理 WebSocket 连接请求
 func (s *Server) handleWebSocket(c echo.Context) error {
+	// === WebSocket 认证 ===
+	// 支持多种方式传递 API Key：
+	// 1. URL 参数: /ws?key=xxx
+	// 2. Header: X-API-Key
+	cfg := s.config.Get()
+	apiKey := c.QueryParam("key")
+	if apiKey == "" {
+		apiKey = c.Request().Header.Get("X-API-Key")
+	}
+
+	// 验证 API Key
+	if apiKey != cfg.Server.APIKey {
+		log.Printf("⚠️  WebSocket 认证失败: 无效的 API Key")
+		return echo.NewHTTPError(401, "Unauthorized: Invalid API Key")
+	}
+
 	conn, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 	if err != nil {
 		log.Printf("❌ WebSocket 升级失败: %v", err)

@@ -51,15 +51,13 @@ const ToastContainer = ({ toasts }: { toasts: ToastMessage[] }) => (
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, x: 20, scale: 0.9 }}
           layout
-          className={`pointer-events-auto px-4 py-3 rounded-lg shadow-xl backdrop-blur-md flex items-center gap-3 min-w-[300px] ${
-            t.type === 'error' ? 'bg-red-500/10 text-red-500 dark:text-red-400 shadow-red-500/10' :
+          className={`pointer-events-auto px-4 py-3 rounded-lg shadow-xl backdrop-blur-md flex items-center gap-3 min-w-[300px] ${t.type === 'error' ? 'bg-red-500/10 text-red-500 dark:text-red-400 shadow-red-500/10' :
             t.type === 'success' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-emerald-500/10' :
-            'bg-surface/90 text-content shadow-black/10'
-          }`}
+              'bg-surface/90 text-content shadow-black/10'
+            }`}
         >
-          <div className={`w-2 h-2 rounded-full ${
-            t.type === 'error' ? 'bg-red-500' : t.type === 'success' ? 'bg-emerald-500' : 'bg-primary'
-          }`} />
+          <div className={`w-2 h-2 rounded-full ${t.type === 'error' ? 'bg-red-500' : t.type === 'success' ? 'bg-emerald-500' : 'bg-primary'
+            }`} />
           <span className="text-sm font-medium">{t.message}</span>
         </motion.div>
       ))}
@@ -70,11 +68,11 @@ const ToastContainer = ({ toasts }: { toasts: ToastMessage[] }) => (
 export const AuthModal = ({ onLogin, onCancel }: { onLogin: (key: string) => void, onCancel?: () => void }) => {
   const [key, setKey] = useState('');
   return (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
     >
-      <motion.div 
+      <motion.div
         initial={{ scale: 0.95, y: 10 }} animate={{ scale: 1, y: 0 }}
         className="bg-surface p-8 rounded-2xl w-full max-w-sm shadow-2xl relative overflow-hidden"
       >
@@ -95,17 +93,17 @@ export const AuthModal = ({ onLogin, onCancel }: { onLogin: (key: string) => voi
             value={key}
             onChange={e => setKey(e.target.value)}
           />
-          <motion.button 
+          <motion.button
             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-            type="submit" 
+            type="submit"
             className="w-full bg-primary hover:opacity-90 text-primary-foreground font-bold py-3 rounded-lg transition-all shadow-lg shadow-primary/20"
           >
             解锁
           </motion.button>
           {onCancel && (
-             <button type="button" onClick={onCancel} className="w-full mt-3 text-muted hover:text-content text-sm py-2 transition-colors">
-               取消
-             </button>
+            <button type="button" onClick={onCancel} className="w-full mt-3 text-muted hover:text-content text-sm py-2 transition-colors">
+              取消
+            </button>
           )}
         </form>
       </motion.div>
@@ -116,7 +114,7 @@ export const AuthModal = ({ onLogin, onCancel }: { onLogin: (key: string) => voi
 // --- Theme Switcher Component ---
 const ThemeToggle = () => {
   const { theme, setTheme } = useContext(AppContext);
-  
+
   const cycleTheme = () => {
     if (theme === 'system') setTheme('light');
     else if (theme === 'light') setTheme('dark');
@@ -156,15 +154,17 @@ const Layout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
       {/* Sidebar - Hidden in Fullscreen Mode */}
       <AnimatePresence>
         {!isFullscreenMode && (
-          <motion.aside 
+          <motion.aside
             initial={{ x: -250, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: -250, opacity: 0 }}
             className="w-64 fixed h-full hidden md:flex flex-col bg-surface/80 backdrop-blur-xl z-20"
           >
             <div className="p-6">
-              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-500 tracking-tight">IDRD</h1>
-              <p className="text-xs text-muted mt-1 font-mono tracking-wide">SYSTEM V2.0</p>
+              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-emerald-500 tracking-tight flex items-center gap-2">
+                <span>🌐</span> IDRD
+              </h1>
+              <p className="text-xs text-muted mt-1 font-mono tracking-wide">IP & DNS Records Dashboard</p>
             </div>
             <nav className="flex-1 p-4 space-y-2">
               <SidebarItem to="/" icon={LayoutDashboard} label={isZh ? "仪表盘" : "Dashboard"} active={location.pathname === '/'} />
@@ -190,16 +190,16 @@ const Layout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
       {/* Mobile Header */}
       {!isFullscreenMode && (
         <div className="md:hidden fixed top-0 w-full z-20 bg-surface/80 backdrop-blur-lg px-6 py-4 flex justify-between items-center shadow-sm">
-          <span className="font-bold text-xl text-primary">IDRD</span>
+          <span className="font-bold text-xl text-primary">🌐 IDRD</span>
           <div className="flex gap-4">
-              <a href="#/" className={location.pathname === '/' ? 'text-primary' : 'text-muted'}><LayoutDashboard size={24}/></a>
-              <a href="#/config" className={location.pathname === '/config' ? 'text-primary' : 'text-muted'}><Settings size={24}/></a>
+            <a href="#/" className={location.pathname === '/' ? 'text-primary' : 'text-muted'}><LayoutDashboard size={24} /></a>
+            <a href="#/config" className={location.pathname === '/config' ? 'text-primary' : 'text-muted'}><Settings size={24} /></a>
           </div>
         </div>
       )}
 
       {/* Main Content */}
-      <motion.main 
+      <motion.main
         layout
         className={`flex-1 p-6 md:p-10 pt-24 md:pt-10 w-full min-h-screen transition-all duration-300 ${!isFullscreenMode ? 'md:ml-64 max-w-7xl mx-auto' : 'ml-0 max-w-full'}`}
       >
@@ -217,7 +217,7 @@ const Layout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
             </motion.button>
           )}
         </AnimatePresence>
-        
+
         <AnimatePresence mode='wait'>
           <Routes location={location} key={location.pathname}>
             <Route path="/" element={
@@ -258,7 +258,7 @@ const App = () => {
       }
       localStorage.setItem('idrd_theme', t);
     };
-    
+
     applyTheme(theme);
 
     // Listener for system changes if in system mode
@@ -307,10 +307,10 @@ const App = () => {
   }, []);
 
   return (
-    <AppContext.Provider value={{ 
-      lang, toggleLang, 
+    <AppContext.Provider value={{
+      lang, toggleLang,
       theme, setTheme,
-      showToast, 
+      showToast,
       isAuthenticated, setAuthenticated,
       isFullscreenMode, toggleFullscreenMode
     }}>

@@ -140,6 +140,11 @@ func New(cfg *config.SafeConfig, database *db.DB, dnsUpdater *dns.CloudflareUpda
 	// WebSocket 实时推送（不需要认证，因为只推送公开数据）
 	e.GET("/ws", s.handleWebSocket)
 
+	// 健康检查端点（不需要认证，供 Docker 健康检查使用）
+	e.GET("/health", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, map[string]string{"status": "ok"})
+	})
+
 	// SPA 路由回退 (捕获所有非 API 请求)
 	authenticated.GET("/*", func(c echo.Context) error {
 		path := c.Request().URL.Path

@@ -33,6 +33,12 @@ func main() {
 	if dbPath == "" {
 		dbPath = "/data/idrd.db"
 	}
+	
+	// 自动创建数据目录（如果不存在）
+	dataDir := filepath.Dir(dbPath)
+	if err := os.MkdirAll(dataDir, 0755); err != nil {
+		log.Printf("⚠️  创建数据目录失败: %v", err)
+	}
 	database, err := db.New(dbPath)
 	if err != nil {
 		log.Fatalf("数据库初始化失败: %v", err)
@@ -66,6 +72,11 @@ func main() {
 		if err := config.SaveConfig(cfg, database); err != nil {
 			log.Fatalf("保存默认配置失败: %v", err)
 		}
+		// 首次生成配置时打印 API Key（方便 Dockge 等无 --init 场景）
+		log.Println("========================================")
+		log.Printf("🔑 API Key: %s", cfg.Server.APIKey)
+		log.Println("========================================")
+		log.Println("⚠️  请保存此 API Key，后续不会再显示！")
 	}
 
 	// 如果是初始化模式，生成完配置后直接退出

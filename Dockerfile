@@ -38,7 +38,12 @@ RUN go mod tidy && go mod download
 RUN CGO_ENABLED=1 GOOS=linux go build -a -ldflags '-linkmode external -extldflags "-static"' -o idrd ./cmd/idrd
 
 # 第三阶段：运行时
-FROM gcr.io/distroless/static-debian12:nonroot
+# 选项1：Alpine（支持健康检查，推荐）
+FROM alpine:3.23
+RUN apk add --no-cache wget ca-certificates tzdata
+
+# 选项2：Distroless（更小体积，但无健康检查支持）
+# FROM gcr.io/distroless/static-debian12:nonroot
 
 WORKDIR /app
 

@@ -280,7 +280,8 @@ const Dashboard = () => {
 
     const connectWebSocket = () => {
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsUrl = `${protocol}//${window.location.host}/ws`;
+      const apiKey = localStorage.getItem('idrd_api_key') || '';
+      const wsUrl = `${protocol}//${window.location.host}/ws?key=${encodeURIComponent(apiKey)}`;
 
       try {
         ws = new WebSocket(wsUrl);

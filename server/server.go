@@ -88,6 +88,8 @@ func New(cfg *config.SafeConfig, database *db.DB, dnsUpdater *dns.CloudflareUpda
 	e.GET("/assets/*", func(c echo.Context) error {
 		return serveStatic(c, "assets/"+c.Param("*"))
 	})
+	e.GET("/index.css", func(c echo.Context) error { return serveStatic(c, "index.css") })
+	e.GET("/vite.svg", func(c echo.Context) error { return serveStatic(c, "vite.svg") })
 	e.GET("/*.js", func(c echo.Context) error { return serveStatic(c, c.Param("*")+".js") })
 	e.GET("/*.css", func(c echo.Context) error { return serveStatic(c, c.Param("*")+".css") })
 	e.GET("/*.svg", func(c echo.Context) error { return serveStatic(c, c.Param("*")+".svg") })

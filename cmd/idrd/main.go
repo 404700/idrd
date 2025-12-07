@@ -198,7 +198,7 @@ services:
     
     # 健康检查
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost:%d/api/ip"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:%d/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -311,6 +311,10 @@ func monitorIP(provider ip.Provider, updater *dns.CloudflareUpdater, srv *server
 			} else {
 				log.Printf("✅ DNS 记录已更新为: %s", currentIP)
 			}
+
+			// 广播 IP 变化到所有 WebSocket 客户端
+			srv.BroadcastIPChange(currentIP, source)
+			log.Printf("📡 已广播 IP 变化到 %d 个客户端", srv.Hub.ClientCount())
 
 			lastIP = currentIP
 		}

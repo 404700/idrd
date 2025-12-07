@@ -282,15 +282,23 @@ func monitorIP(provider ip.Provider, updater *dns.CloudflareUpdater, srv *server
 
 		// 记录这次检查的时间（无论成功失败）
 		srv.SetLastCheck(time.Now())
+		startCheck := time.Now()
 
 		currentIP, source, err := provider.GetIP()
+		checkDuration := int(time.Since(startCheck).Milliseconds())
+
 		if err != nil {
 			log.Printf("❌ 获取 IP 失败: %v", err)
 			// 记录错误到数据库
 			database.AddErrorLog("error", fmt.Sprintf("获取 IP 失败: %v", err))
+			// 记录失败的检查日志
+			database.AddCheckLog("ip", false, "", checkDuration, err.Error())
 			time.Sleep(30 * time.Second)
 			continue
 		}
+
+		// 记录成功的检查日志
+		database.AddCheckLog("ip", true, currentIP, checkDuration, "")
 
 		// 每次成功获取 IP 时都更新 CurrentIP 和 CurrentSource
 		// 这样即使 IP 没变但 provider 切换了，source 也会正确更新

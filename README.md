@@ -14,4 +14,4 @@ docker run --rm -u $(id -u):$(id -g) -v $(pwd)/data:/data:rw ghcr.io/404700/idrd
 mv data/docker-compose.yml ./
 docker compose up -d
 ```
-### 非商业使用许可证 (Non-Commercial License)
+### 非商业使用许可 (Non-Commercial License)
